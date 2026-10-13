@@ -2,6 +2,20 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/queue",
+      "destination": "https://task-queue-eight.vercel.app/queue"
+    },
+    {
+      "source": "/queue/:path*",
+      "destination": "https://task-queue-eight.vercel.app/queue/:path*"
+    },
+    {
+      "source": "/api/queue/:path*",
+      "destination": "https://task-queue-eight.vercel.app/api/queue/:path*"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -12,7 +26,7 @@
         { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+          "value": "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
         }
       ]
     }
