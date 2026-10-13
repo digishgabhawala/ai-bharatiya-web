@@ -8,6 +8,10 @@ This repository owns the suite homepage and, over time, the path-based product g
 - `/queue` — Task Queue
 - `/linkedin` — LinkedIn Content Agent (managed separately)
 
+Task Queue is deployed independently and mounted here through Vercel rewrites.
+Its UI and browser API are both product-scoped (`/queue/*` and
+`/api/queue/*`), while machine clients continue to call the service directly.
+
 ## Local preview
 
 ```bash
