@@ -14,22 +14,45 @@
     {
       "source": "/api/queue/:path*",
       "destination": "https://task-queue-eight.vercel.app/api/queue/:path*"
+    },
+    {
+      "source": "/linkedin",
+      "destination": "https://linkedin-content-agent-mauve.vercel.app/linkedin"
+    },
+    {
+      "source": "/linkedin/:path*",
+      "destination": "https://linkedin-content-agent-mauve.vercel.app/linkedin/:path*"
+    },
+    {
+      "source": "/api/linkedin/:path*",
+      "destination": "https://linkedin-content-agent-mauve.vercel.app/api/linkedin/:path*"
     }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+          "value": "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
         }
       ]
     }
   ]
 }
-
