@@ -11,9 +11,13 @@ This repository owns the suite homepage and, over time, the path-based product g
 Task Queue and LinkedIn Content Agent are deployed independently and mounted
 here through Vercel rewrites. Each product's UI and browser API are
 product-scoped (`/queue/*` + `/api/queue/*`, `/linkedin/*` + `/api/linkedin/*`),
-while machine clients continue to call the services directly. Both apps use
-the same Supabase project with default session storage, so one sign-in on
-this origin works in both. The Content-Security-Policy allows images from
+and machine clients use the matching product-scoped API on this same public
+origin. For Task Queue, configure
+`TASK_QUEUE_URL=https://ai-bharatiya-web.vercel.app/queue`; its clients map
+that to `/api/queue`. The standalone service hostname appears only in this
+gateway's rewrite configuration as an internal upstream. Both apps use the
+same Supabase project with default session storage, so one sign-in on this
+origin works in both. The Content-Security-Policy allows images from
 `https://*.supabase.co` (LinkedIn's post images live in Supabase Storage).
 
 ## Local preview
