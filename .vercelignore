@@ -1,0 +1,7 @@
+tests/
+db/
+scripts/
+.venv/
+pytest.ini
+ruff.toml
+requirements-dev.txt

@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """Fast, dependency-free checks for the static AI Bharatiyaa homepage."""
 
-from html.parser import HTMLParser
-from pathlib import Path
 import re
 import sys
-
+from html.parser import HTMLParser
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
