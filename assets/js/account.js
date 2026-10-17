@@ -1,4 +1,5 @@
 import { el, getSession, goToLogin, loadMe, renderAccountNav } from '/assets/js/platform.js'
+import { startWorkerKeys } from '/assets/js/worker-keys.js'
 
 const MESSAGES = {
   pending:
@@ -35,6 +36,8 @@ async function start() {
   const mine = me.status === 'approved' ? APPS.filter((app) => me.apps.includes(app.id)) : []
   list.replaceChildren(...mine.map((app) => el('li', {}, el('a', { href: app.href }, app.name))))
   apps.hidden = mine.length === 0
+
+  if (me.status === 'approved') await startWorkerKeys()
 }
 
 start().catch(() => {
