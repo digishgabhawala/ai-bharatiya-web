@@ -46,6 +46,35 @@
 
         <section id="worker-keys" class="panel" aria-labelledby="worker-keys-title" hidden>
           <h2 id="worker-keys-title">Worker keys</h2>
+          <p class="panel-intro">A worker key lets one of your machines run Task Queue work. Create one key per machine and revoke it when the machine is retired.</p>
+          <p id="worker-keys-alert" class="alert" role="alert" hidden></p>
+
+          <section id="new-key" class="new-key" aria-labelledby="new-key-title" hidden>
+            <h3 id="new-key-title">New worker key</h3>
+            <p class="new-key-note">Copy it now. It won't be shown again.</p>
+            <div class="copy-row">
+              <code id="new-key-value" class="key-value"></code>
+              <button id="copy-key" class="button button-quiet button-small" type="button">Copy key</button>
+            </div>
+            <p class="new-key-hint">Add these lines to the worker's <code>.env</code>:</p>
+            <pre id="new-key-env" class="env-lines"></pre>
+            <div class="row-actions">
+              <button id="copy-env" class="button button-quiet button-small" type="button">Copy .env lines</button>
+              <button id="new-key-done" class="button button-primary button-small" type="button">Done</button>
+            </div>
+            <p id="copy-status" class="new-key-hint" role="status" aria-live="polite"></p>
+          </section>
+
+          <form id="worker-key-form" class="key-form">
+            <div class="key-form-field">
+              <label for="worker-key-name">Name</label>
+              <input id="worker-key-name" name="name" type="text" required maxlength="100" autocomplete="off" placeholder="e.g. Asha's MacBook" />
+            </div>
+            <button id="worker-key-create" class="button button-primary" type="submit">Create</button>
+          </form>
+
+          <div id="worker-keys-table" class="table-wrap"></div>
+          <p id="worker-keys-empty" class="panel-intro" hidden>No worker keys yet.</p>
         </section>
       </div>
     </main>
