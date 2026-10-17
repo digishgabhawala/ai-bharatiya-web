@@ -56,6 +56,39 @@ async function revoke(key, button) {
   await loadKeys()
 }
 
+// Revoking cuts off the worker using the key, so it takes a second, explicit
+// step: Revoke -> inline "Revoke this key? Yes, revoke / Cancel" (Cancel is
+// focused, Escape cancels).
+function showRevokeButton(key, actions, focus = false) {
+  const button = el('button', { class: 'button button-quiet button-small', type: 'button' }, 'Revoke')
+  button.addEventListener('click', () => showRevokeConfirm(key, actions))
+  actions.replaceChildren(button)
+  if (focus) button.focus()
+}
+
+function showRevokeConfirm(key, actions) {
+  const cancelConfirm = () => showRevokeButton(key, actions, true)
+  const yes = el('button', { class: 'button button-danger button-small', type: 'button' }, 'Yes, revoke')
+  const cancel = el('button', { class: 'button button-quiet button-small', type: 'button' }, 'Cancel')
+  yes.addEventListener('click', () => {
+    cancel.disabled = true
+    revoke(key, yes)
+  })
+  cancel.addEventListener('click', cancelConfirm)
+  const group = el(
+    'div',
+    { class: 'revoke-confirm', role: 'group', 'aria-label': `Revoke ${key.name}?` },
+    el('span', {}, 'Revoke this key? Its worker stops working.'),
+    yes,
+    cancel,
+  )
+  group.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') cancelConfirm()
+  })
+  actions.replaceChildren(group)
+  cancel.focus()
+}
+
 function render(keys) {
   $('worker-keys-empty').hidden = keys.length > 0
   if (keys.length === 0) {
@@ -66,12 +99,8 @@ function render(keys) {
     const status = key.revoked_at
       ? el('span', { class: 'pill pill-revoked' }, `Revoked ${formatDate(key.revoked_at)}`)
       : el('span', { class: 'pill pill-approved' }, 'Active')
-    const actions = []
-    if (!key.revoked_at) {
-      const button = el('button', { class: 'button button-quiet button-small', type: 'button' }, 'Revoke')
-      button.addEventListener('click', () => revoke(key, button))
-      actions.push(button)
-    }
+    const actions = el('div', { class: 'row-actions' })
+    if (!key.revoked_at) showRevokeButton(key, actions)
     return el(
       'tr',
       { 'aria-label': key.name },
@@ -80,7 +109,7 @@ function render(keys) {
       el('td', {}, formatDate(key.created_at)),
       el('td', {}, key.last_used_at ? formatDate(key.last_used_at) : 'Never'),
       el('td', {}, status),
-      el('td', {}, el('div', { class: 'row-actions' }, ...actions)),
+      el('td', {}, actions),
     )
   })
   const headings = ['Name', 'Key', 'Created', 'Last used', 'Status', 'Actions']
