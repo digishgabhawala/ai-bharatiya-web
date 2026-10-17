@@ -694,3 +694,130 @@ a.product-row:hover {
   }
 }
 
+
+/* Platform pages: /login, /account, /admin/users */
+
+[hidden] {
+  display: none !important;
+}
+
+.page-main {
+  padding-block: clamp(3rem, 8vw, 5rem);
+}
+
+.page-main h1 {
+  margin: 0 0 var(--space-4);
+  font-family: var(--font-display);
+  font-size: var(--text-4xl);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.page-main h2 {
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+}
+
+.auth-card,
+.panel {
+  padding: var(--space-8);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.auth-card {
+  display: grid;
+  max-width: 28rem;
+  gap: var(--space-4);
+  margin-inline: auto;
+}
+
+.auth-card h1 {
+  margin: 0;
+  font-size: var(--text-3xl);
+}
+
+.auth-intro {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.button-block {
+  width: 100%;
+}
+
+button.button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+button.button:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
+.button-small {
+  min-height: 2.25rem;
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-xs);
+}
+
+.button-danger {
+  border-color: var(--color-danger-600);
+  background: var(--color-surface);
+  color: var(--color-danger-600);
+}
+
+.link-button {
+  justify-self: center;
+  min-height: 2.75rem;
+  padding: 0 var(--space-2);
+  border: 0;
+  background: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.auth-form {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.auth-form label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.auth-form input {
+  min-height: 2.75rem;
+  margin-bottom: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+}
+
+.auth-form input:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.alert {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-danger-600);
+  border-radius: var(--radius-md);
+  background: var(--color-danger-50);
+  color: var(--color-danger-600);
+  font-size: var(--text-sm);
+}
