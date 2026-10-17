@@ -50,9 +50,16 @@ async def _fetch_supabase_user(token: str) -> dict:
                                              "Authorization": f"Bearer {token}"})
     except httpx.HTTPError as exc:
         raise HTTPException(503, "Identity service is temporarily unavailable") from exc
-    if resp.status_code != 200:
+    if resp.status_code in (401, 403):
         raise _unauthorized()
-    return resp.json()
+    # Anything else (429, 5xx, a malformed body) is Supabase trouble, not a bad
+    # session: a 401 here would make every page drop its session and sign out.
+    if resp.status_code != 200:
+        raise HTTPException(503, "Identity service is temporarily unavailable")
+    try:
+        return resp.json()
+    except ValueError as exc:
+        raise HTTPException(503, "Identity service is temporarily unavailable") from exc
 
 
 def _token_expiry(token: str) -> float:

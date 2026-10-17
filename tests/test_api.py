@@ -114,3 +114,33 @@ def test_identity_is_cached_but_profile_is_read_fresh(client, store):
     store.profiles[ADMIN] = dataclasses.replace(store.profiles[ADMIN], status="suspended")
     assert client.get(f"{P}/me").json()["status"] == "suspended"
     assert client.who["calls"] == 1
+
+
+@pytest.mark.parametrize("upstream,expected", [(401, 401), (403, 401), (429, 503), (500, 503),
+                                               (502, 503)])
+def test_only_a_refused_token_is_401_upstream_trouble_is_503(monkeypatch, upstream, expected):
+    import httpx
+
+    monkeypatch.setattr(settings, "supabase_url", "https://proj.supabase.co")
+
+    class FakeClient:
+        def __init__(self, *a, **k):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *a):
+            return False
+
+        async def get(self, url, headers):
+            return httpx.Response(upstream, json={"msg": "x"})
+
+    monkeypatch.setattr(auth.httpx, "AsyncClient", FakeClient)
+    auth.clear_cache()
+    app.dependency_overrides[get_store] = FakeStore
+    try:
+        resp = TestClient(app).get(f"{P}/me", headers={"Authorization": f"Bearer {_token()}"})
+    finally:
+        app.dependency_overrides.clear()
+    assert resp.status_code == expected

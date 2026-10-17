@@ -24,3 +24,9 @@ def test_csp_allows_google_avatars_and_keeps_scripts_strict():
     assert "img-src 'self' data: https://*.supabase.co https://*.googleusercontent.com" in csp
     assert "script-src 'self' https://cdn.jsdelivr.net;" in csp
     assert "unsafe-inline" not in csp.split("style-src")[0]
+
+
+def test_local_only_files_are_never_deployed():
+    ignored = (ROOT / ".vercelignore").read_text().split()
+    for entry in (".superpowers/", ".env", ".env.*", "tests/", "db/", "scripts/", ".venv/"):
+        assert entry in ignored

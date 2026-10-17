@@ -86,7 +86,10 @@ export async function signOut() {
 // The signed-in user's profile, or null when there is no (valid) session.
 export async function loadMe() {
   const resp = await apiFetch('/api/platform/me', {}, { redirectOn401: false })
-  if (resp.status === 401) return null
+  if (resp.status === 401) {
+    await dropRejectedSession()
+    return null
+  }
   if (!resp.ok) throw new Error(`me ${resp.status}`)
   return resp.json()
 }
