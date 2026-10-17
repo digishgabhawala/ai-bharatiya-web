@@ -17,6 +17,29 @@ emailToggle.addEventListener('click', () => {
   document.getElementById('login-email').focus()
 })
 
+// Attached at once, not after the client loads: a submit before then would
+// otherwise be a native GET form submit, putting the password in the URL.
+emailForm.addEventListener('submit', async (event) => {
+  event.preventDefault()
+  alertBox.hidden = true
+  const submit = emailForm.querySelector('button[type="submit"]')
+  submit.disabled = true
+  let client
+  try {
+    client = await getClient()
+  } catch {
+    submit.disabled = false
+    showError('Sign-in is unavailable right now. Please try again shortly.')
+    return
+  }
+  const { error } = await client.auth.signInWithPassword({
+    email: emailForm.email.value.trim(),
+    password: emailForm.password.value,
+  })
+  submit.disabled = false
+  if (error) showError('Email or password is incorrect.')
+})
+
 async function start() {
   let client
   try {
@@ -51,18 +74,6 @@ async function start() {
     }
   })
 
-  emailForm.addEventListener('submit', async (event) => {
-    event.preventDefault()
-    alertBox.hidden = true
-    const submit = emailForm.querySelector('button[type="submit"]')
-    submit.disabled = true
-    const { error } = await client.auth.signInWithPassword({
-      email: emailForm.email.value.trim(),
-      password: emailForm.password.value,
-    })
-    submit.disabled = false
-    if (error) showError('Email or password is incorrect.')
-  })
 }
 
 start()
