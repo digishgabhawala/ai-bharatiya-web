@@ -255,7 +255,8 @@ def test_approved_user_worker_key_shown_once_and_revoked(ctx, page: Page):
     expect(page.locator("#worker-keys-table")).to_contain_text("e2e journey key", timeout=20_000)
     assert not page.locator("#new-key-value").inner_text().strip()
     page.locator("#worker-keys-table").get_by_role("button", name="Revoke").click()
-    page.wait_for_timeout(3_000)
+    page.locator("#worker-keys-table").get_by_role("button", name="Yes, revoke").click()
+    expect(page.locator("#worker-keys-table")).to_contain_text("Revoked", timeout=20_000)
     rows = _db("select revoked_at is not null from public.worker_keys where user_id::text = %s",
                (acc["id"],))
     assert rows == [(True,)], rows

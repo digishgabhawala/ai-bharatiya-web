@@ -977,6 +977,23 @@ button.button:disabled {
   gap: var(--space-2);
 }
 
+.revoke-confirm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.button-danger {
+  border: 1px solid var(--color-danger-600);
+  background: var(--color-danger-600);
+  color: var(--color-neutral-0);
+}
+
+.button-danger:hover {
+  filter: brightness(0.92);
+}
+
 .pill {
   display: inline-flex;
   margin-right: var(--space-1);

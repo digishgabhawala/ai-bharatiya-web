@@ -80,17 +80,40 @@ def test_list_shows_prefix_dates_and_status(page, site):
     expect(revoked.get_by_role("button", name="Revoke")).to_have_count(0)
 
 
-def test_revoke_calls_delete(page, site):
+def test_revoke_asks_for_confirmation_then_calls_delete(page, site):
     calls = []
     mock_platform(page, me=ME)
     _keys(page, [KEY], calls)
     sign_in(page)
     page.goto(f"{site}/account")
-    with page.expect_request(lambda r: r.method == "DELETE" and r.url.endswith("/worker-keys/k1")):
-        page.get_by_role("row", name="Asha's MacBook").get_by_role("button", name="Revoke").click()
     row = page.get_by_role("row", name="Asha's MacBook")
+    row.get_by_role("button", name="Revoke").click()
+    confirm = row.get_by_role("group", name="Revoke Asha's MacBook?")
+    expect(confirm).to_contain_text("Revoke this key?")
+    expect(confirm.get_by_role("button", name="Cancel")).to_be_focused()
+    assert not any(c[0] == "DELETE" for c in calls)            # nothing revoked yet
+    with page.expect_request(lambda r: r.method == "DELETE" and r.url.endswith("/worker-keys/k1")):
+        confirm.get_by_role("button", name="Yes, revoke").click()
     expect(row).to_contain_text("Revoked")                      # list re-fetched
     expect(row.get_by_role("button", name="Revoke")).to_have_count(0)
+
+
+def test_revoke_can_be_cancelled(page, site):
+    calls = []
+    mock_platform(page, me=ME)
+    _keys(page, [KEY], calls)
+    sign_in(page)
+    page.goto(f"{site}/account")
+    row = page.get_by_role("row", name="Asha's MacBook")
+    row.get_by_role("button", name="Revoke").click()
+    row.get_by_role("button", name="Cancel").click()
+    expect(row.get_by_role("group")).to_have_count(0)
+    expect(row.get_by_role("button", name="Revoke")).to_be_focused()
+    row.get_by_role("button", name="Revoke").click()
+    page.keyboard.press("Escape")                               # Escape cancels too
+    expect(row.get_by_role("button", name="Revoke")).to_be_focused()
+    expect(row).to_contain_text("Active")
+    assert not any(c[0] == "DELETE" for c in calls)
 
 
 def test_api_errors_show_their_detail(page, site):
