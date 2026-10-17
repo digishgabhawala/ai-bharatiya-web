@@ -47,3 +47,17 @@ def test_header_sign_out_returns_to_login(page, site):
     page.goto(f"{site}/")
     page.get_by_role("button", name="Sign out").click()
     page.wait_for_url(f"{site}/login")
+    page.wait_for_timeout(500)
+    assert page.url == f"{site}/login"
+
+
+def test_rejected_stored_session_lands_on_login_and_stays(page, site):
+    # Session in localStorage but the server rejects it (401 on /me): forget it
+    # locally, otherwise /login would bounce straight back (redirect loop).
+    mock_platform(page)  # no `me`: /me answers 401
+    sign_in(page)
+    page.goto(f"{site}/account")
+    page.wait_for_url(f"{site}/login?next=%2Faccount")
+    page.wait_for_timeout(1000)
+    assert page.url == f"{site}/login?next=%2Faccount"
+    expect(page.get_by_role("button", name="Continue with Google")).to_be_visible()

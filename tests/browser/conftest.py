@@ -46,5 +46,9 @@ def sign_in(page, user_id="u1", email="a@example.com"):
                "user": {"id": user_id, "email": email, "aud": "authenticated",
                         "role": "authenticated", "app_metadata": {}, "user_metadata": {},
                         "created_at": "2026-10-16T00:00:00Z"}}
+    # Seed once per tab, like a real sign-in: re-seeding on every navigation
+    # would undo a sign-out (or a dropped, server-rejected session).
     page.add_init_script(
-        f"localStorage.setItem('sb-proj-auth-token', {json.dumps(json.dumps(session))})")
+        "if (!sessionStorage.getItem('test-seeded')) {"
+        f" localStorage.setItem('sb-proj-auth-token', {json.dumps(json.dumps(session))});"
+        " sessionStorage.setItem('test-seeded', '1') }")
