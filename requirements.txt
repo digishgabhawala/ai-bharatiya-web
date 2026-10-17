@@ -1,0 +1,4 @@
+fastapi==0.115.5
+httpx==0.28.0
+psycopg[binary]==3.2.13
+pydantic-settings==2.6.1
