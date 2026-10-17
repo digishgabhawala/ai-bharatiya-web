@@ -38,3 +38,48 @@ python3 scripts/validate_site.py
 
 The site follows `ai-bharatiya-commons` v0.2. The checked-in token snapshot is pinned to commit `741e8ce` so production builds do not depend on a sibling repository.
 
+
+## Platform API (`/api/platform/*`)
+
+Shared identity for the suite: a `platform` schema in the Supabase project
+(`profiles`, `app_memberships`, filled by a trigger on `auth.users`) and a
+small FastAPI function, `api/identity.py` (package `api/_platform_api/`),
+deployed in `hnd1` and reached through the `/api/platform/:path*` rewrite.
+
+| Route | Who | Does |
+|---|---|---|
+| `GET /api/platform/config` | public | Supabase URL + publishable key for the pages |
+| `GET /api/platform/me` | signed in | profile, status, admin flag, apps |
+| `GET /api/platform/users?status=` | admin | profiles, pending first |
+| `POST /api/platform/users/{id}/{approve,reject,suspend,reinstate}` | admin | status change (409 if illegal) |
+| `POST /api/platform/users/{id}/admin` `{is_admin}` | admin | grant or revoke admin |
+
+Settings (Vercel environment variables): `DATABASE_URL` (Supabase pooler),
+`SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, and `PLATFORM_ADMIN_EMAILS`
+(bootstrap only, read by the migration script).
+
+### Migrations
+
+SQL lives in `db/migrations/`. Apply it (idempotent), backfill a profile for
+every existing auth user, and seed the bootstrap admins (only while no
+approved admin exists):
+
+```bash
+DATABASE_URL='postgresql://…' PLATFORM_ADMIN_EMAILS=admin@example.com \
+  .venv/bin/python scripts/apply_platform_migrations.py
+```
+
+### Tests
+
+```bash
+python3 -m venv .venv && .venv/bin/pip install -r requirements.txt -r requirements-dev.txt
+.venv/bin/playwright install chromium
+
+.venv/bin/pytest -q tests --ignore=tests/db --ignore=tests/browser   # pure, no Docker
+(cd ../task-queue && supabase start)                                  # local Postgres + auth
+.venv/bin/pytest -q tests/db                                          # local DB only
+.venv/bin/pytest -q tests/browser                                     # headless Chromium
+.venv/bin/ruff check api tests scripts
+```
+
+The DB tests refuse any database that is not on `127.0.0.1`/`localhost`.
