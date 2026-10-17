@@ -3,3 +3,6 @@ line-length = 100
 
 [lint]
 ignore = ["B008"]
+
+[lint.isort]
+known-first-party = ["_platform_api", "scripts", "tests"]
