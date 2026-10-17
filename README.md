@@ -83,3 +83,17 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt -r requiremen
 ```
 
 The DB tests refuse any database that is not on `127.0.0.1`/`localhost`.
+
+## Platform TODO
+
+- **Rotate shared secrets once the projects mature** (deferred by choice,
+  2026-10-17, while development is active). Rotate the Supabase database
+  password and the service/secret key, then update the local `.env` files
+  and the Vercel env of all three projects (parent, LinkedIn, task-queue).
+  Why: the database URL appeared in tool output during the 2026-10-16
+  rollout, and 51 task-queue deployments made before its `.vercelignore`
+  (14 Aug–17 Oct 2026) contain its `.env` (team-visible only). Delete those
+  old deployments at the same time.
+- Private image links (signed URLs) and an `approved` check in Storage
+  policies; per-user limits; public character library; own-worker-first
+  routing; account deletion / data export (see the user-management spec).
