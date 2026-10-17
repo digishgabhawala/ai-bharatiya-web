@@ -29,6 +29,7 @@ from scripts import test_accounts as accounts_script
 
 BASE = os.environ.get("JOURNEY_BASE_URL", "https://ai-bharatiya-web.vercel.app").rstrip("/")
 SUSPEND_PROPAGATION_SECONDS = 120
+BRIEF_MARKER = "e2e journey check"  # in every brief this module submits
 
 
 def _db(sql: str, params=None):
@@ -101,6 +102,11 @@ def _cleanup(state: dict) -> None:
         "select 1 from linkedin.posts where id = any(%s) and "
         "(active_step::text like %s or step_context::text like %s or image_task_id::text = %s)",
         (post_ids, f"%{t}%", f"%{t}%", t))]
+    # A worker may finish a step before cleanup and the post move on, so the
+    # post no longer names the task; the journey's briefs carry BRIEF_MARKER.
+    referenced += [r[0] for r in _db(
+        "select id::text from public.tasks where id::text = any(%s) and payload::text like %s",
+        (new_tasks, f"%{BRIEF_MARKER}%")) if r[0] not in referenced]
     if referenced:
         _db("delete from public.tasks where id::text = any(%s)", (referenced,))
     state["deleted_tasks"] = referenced
@@ -159,7 +165,7 @@ def test_approved_user_isolation_before_profile(ctx, tokens, page: Page):
     t = tokens["approved"]
     resp = _api("GET", "/api/linkedin/posts", t)
     assert resp.status_code == 200 and resp.json() == [], resp.text
-    resp = _api("POST", "/api/linkedin/posts", t, json={"brief": "e2e journey check"})
+    resp = _api("POST", "/api/linkedin/posts", t, json={"brief": BRIEF_MARKER})
     assert resp.status_code == 409 and _reason(resp) == "profile_required", resp.text
     assert _api("GET", "/api/linkedin/scene-assets", t).json() == []
     assert _api("GET", "/api/linkedin/characters", t).json() == []
@@ -183,11 +189,41 @@ def test_approved_user_onboarding_and_profile(ctx, page: Page):
     page.goto(f"{BASE}/linkedin#characters")
     page.wait_for_timeout(3_000)
 
+    # Onboarding step 2: with a profile but no mascot, the new-post screen
+    # asks for one instead of showing the brief form.
+    page.goto(f"{BASE}/linkedin#posts")
+    expect(page.get_by_role("heading", name="Create your mascot first")).to_be_visible(
+        timeout=20_000)
+    expect(page.get_by_label("Your work update")).to_have_count(0)
+
+
+def _give_mascot(owner_id: str) -> str:
+    """A locked-hero character for a test user, inserted directly (rendering a
+    real hero is out of scope). It reuses the admin's gtee_dev public hero
+    image URL (read only); cleanup deletes it with the user's other characters."""
+    hero = _db("select hero_image_url, hero_asset_id, card_json from linkedin.characters "
+               "where character_id = 'gtee_dev' and hero_image_url is not null")
+    assert hero, "the admin's gtee_dev hero is missing"
+    hero_url, asset_id, card_json = hero[0]
+    character_id = f"e2e_mascot_{owner_id.replace('-', '')[:12]}"
+    _db("insert into linkedin.characters (character_id, owner_id, display_name, card_json, "
+        "hero_asset_id, hero_version, hero_image_url, updated_at) "
+        "values (%s, %s, 'E2E mascot', %s, %s, 1, %s, now() at time zone 'utc')",
+        (character_id, owner_id, card_json, asset_id, hero_url))
+    return character_id
+
 
 def test_approved_user_creates_post_and_cannot_see_admins(ctx, tokens, page: Page):
     t, admin = tokens["approved"], ctx["admin_token"]
-    resp = _api("POST", "/api/linkedin/posts", t, json={"brief": "e2e journey check: one line"})
+    brief = {"brief": f"{BRIEF_MARKER}: one line"}
+    resp = _api("POST", "/api/linkedin/posts", t, json=brief)  # profile, but no mascot yet
+    assert resp.status_code == 409 and _reason(resp) == "character_required", resp.text
+    assert _api("GET", "/api/linkedin/posts", t).json() == []
+
+    mascot = _give_mascot(ctx["accounts"]["approved"]["id"])
+    resp = _api("POST", "/api/linkedin/posts", t, json=brief)
     assert resp.status_code == 200, resp.text
+    assert resp.json()["character_id"] == mascot
     own_id = resp.json()["id"]
     listed = [p["id"] for p in _api("GET", "/api/linkedin/posts", t).json()]
     assert listed == [own_id]
