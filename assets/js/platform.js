@@ -101,8 +101,60 @@ export async function errorDetail(resp) {
   return `Request failed (${resp.status})`
 }
 
-export function renderAccountNav(container, me) {
-  // Filled in by the account menu task.
+export function el(tag, attrs = {}, ...children) {
+  const node = document.createElement(tag)
+  for (const [key, value] of Object.entries(attrs)) {
+    if (value === null || value === undefined || value === false) continue
+    if (key === 'class') node.className = value
+    else if (key.startsWith('on')) node.addEventListener(key.slice(2), value)
+    else node.setAttribute(key, value === true ? '' : value)
+  }
+  node.append(...children.filter((c) => c !== null && c !== undefined && c !== false))
+  return node
+}
+
+export function isAdmin(me) {
+  return Boolean(me && me.is_admin && me.status === 'approved')
+}
+
+// Admins see how many sign-ups are waiting. Failures just leave the badge off.
+export async function refreshPendingBadge(container) {
+  const link = container && container.querySelector('[data-admin-link]')
+  if (!link) return
+  let count = 0
+  try {
+    const resp = await apiFetch('/api/platform/users?status=pending', {}, { redirectOn401: false })
+    if (resp.ok) count = (await resp.json()).length
+  } catch {
+    count = 0
+  }
+  link.querySelector('.badge')?.remove()
+  if (count > 0) {
+    link.setAttribute('aria-label', `Admin ${count} pending`)
+    link.append(el('span', { class: 'badge', 'aria-hidden': 'true' }, String(count)))
+  } else {
+    link.removeAttribute('aria-label')
+  }
+}
+
+// The suite header's account menu. `me` null means signed out.
+export async function renderAccountNav(container, me) {
   if (!container) return
-  container.replaceChildren()
+  if (!me) {
+    const next = encodeURIComponent(location.pathname + location.search)
+    container.replaceChildren(el('a', { class: 'nav-cta', href: `/login?next=${next}` }, 'Sign in'))
+    return
+  }
+  const label = me.display_name || me.email || 'Account'
+  const avatar = me.avatar_url
+    ? el('img', { class: 'avatar', src: me.avatar_url, alt: '', referrerpolicy: 'no-referrer' })
+    : el('span', { class: 'avatar', 'aria-hidden': 'true' }, label.charAt(0).toUpperCase())
+  const items = [
+    el('span', { class: 'account-who' }, avatar, el('span', { class: 'account-name' }, label)),
+    el('a', { href: '/account' }, 'Account'),
+  ]
+  if (isAdmin(me)) items.push(el('a', { href: '/admin/users', 'data-admin-link': true }, 'Admin'))
+  items.push(el('button', { class: 'link-button', type: 'button', onclick: () => signOut() }, 'Sign out'))
+  container.replaceChildren(...items)
+  if (isAdmin(me)) await refreshPendingBadge(container)
 }

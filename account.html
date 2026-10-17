@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Your AI Bharatiyaa account." />
+    <meta name="theme-color" content="#f8fafc" />
+    <title>Account — AI Bharatiyaa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anek+Latin:wght@500;600;700&family=Noto+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/assets/tokens.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
+    <script type="module" src="/assets/js/account.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <header class="site-header">
+      <div class="shell header-inner">
+        <a class="brand" href="/" aria-label="AI Bharatiyaa home">
+          <span class="brand-mark" aria-hidden="true">ai</span>
+          <span>AI Bharatiyaa</span>
+        </a>
+        <nav class="site-nav" aria-label="Account navigation">
+          <div id="account-nav" class="account-nav"></div>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content" class="page-main shell">
+      <h1 id="account-title">Your account</h1>
+      <p id="account-email" class="page-subtitle"></p>
+
+      <div class="panel-stack">
+        <p id="account-status" class="panel status-panel" role="status">Loading your account…</p>
+
+        <section id="account-apps" class="panel" aria-labelledby="account-apps-title" hidden>
+          <h2 id="account-apps-title">Your apps</h2>
+          <ul id="account-app-list" class="app-list"></ul>
+        </section>
+
+        <section id="worker-keys" class="panel" aria-labelledby="worker-keys-title" hidden>
+          <h2 id="worker-keys-title">Worker keys</h2>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>
