@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Approve and manage AI Bharatiyaa accounts." />
+    <meta name="theme-color" content="#f8fafc" />
+    <title>Users — AI Bharatiyaa admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anek+Latin:wght@500;600;700&family=Noto+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/assets/tokens.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
+    <script type="module" src="/assets/js/admin-users.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <header class="site-header">
+      <div class="shell header-inner">
+        <a class="brand" href="/" aria-label="AI Bharatiyaa home">
+          <span class="brand-mark" aria-hidden="true">ai</span>
+          <span>AI Bharatiyaa</span>
+        </a>
+        <nav class="site-nav" aria-label="Account navigation">
+          <div id="account-nav" class="account-nav"></div>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content" class="page-main shell">
+      <h1>Users</h1>
+      <p id="users-status" class="page-subtitle" role="status">Loading users…</p>
+      <p id="users-alert" class="alert" role="alert" hidden></p>
+      <div id="users-table" class="table-wrap"></div>
+    </main>
+  </body>
+</html>
