@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Sign in to the AI Bharatiyaa suite." />
+    <meta name="theme-color" content="#f8fafc" />
+    <title>Sign in — AI Bharatiyaa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anek+Latin:wght@500;600;700&family=Noto+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/assets/tokens.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
+    <script type="module" src="/assets/js/login.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <header class="site-header">
+      <div class="shell header-inner">
+        <a class="brand" href="/" aria-label="AI Bharatiyaa home">
+          <span class="brand-mark" aria-hidden="true">ai</span>
+          <span>AI Bharatiyaa</span>
+        </a>
+      </div>
+    </header>
+
+    <main id="main-content" class="page-main shell">
+      <section class="auth-card" aria-labelledby="login-title">
+        <h1 id="login-title">Sign in to AI Bharatiyaa</h1>
+        <p class="auth-intro">One account for Task Queue, LinkedIn Content Agent and what comes next.</p>
+
+        <button id="google-sign-in" class="button button-primary button-block" type="button">
+          Continue with Google
+        </button>
+
+        <button id="email-toggle" class="link-button" type="button" aria-expanded="false" aria-controls="email-form">
+          Sign in with email
+        </button>
+
+        <form id="email-form" class="auth-form" hidden>
+          <label for="login-email">Email</label>
+          <input id="login-email" name="email" type="email" autocomplete="email" required />
+          <label for="login-password">Password</label>
+          <input id="login-password" name="password" type="password" autocomplete="current-password" required />
+          <button class="button button-quiet button-block" type="submit">Sign in</button>
+        </form>
+
+        <p id="login-alert" class="alert" role="alert" hidden></p>
+      </section>
+    </main>
+  </body>
+</html>
