@@ -8,3 +8,6 @@ requirements-dev.txt
 .superpowers/
 .env
 .env.*
+.pytest_cache/
+.ruff_cache/
+__pycache__/
