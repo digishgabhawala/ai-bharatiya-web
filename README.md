@@ -86,6 +86,9 @@ The DB tests refuse any database that is not on `127.0.0.1`/`localhost`.
 
 ## Platform TODO
 
+> **MVP closed on 2026-11-01.** Open items below are deliberate deferrals, each with the trigger that would bring it back: see [docs/STATUS.md](docs/STATUS.md).
+
+
 - **Rotate shared secrets once the projects mature** (deferred by choice,
   2026-10-17, while development is active). Rotate the Supabase database
   password and the service/secret key, then update the local `.env` files
