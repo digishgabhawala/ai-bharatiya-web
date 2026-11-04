@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-APPS = ("linkedin", "queue")
+APPS = ("linkedin", "queue", "showrun")
 _RULES = {"approve": ({"pending", "rejected"}, "approved"),
           "reject": ({"pending"}, "rejected"),
           "suspend": ({"approved"}, "suspended"),

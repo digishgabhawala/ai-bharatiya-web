@@ -38,6 +38,18 @@
     {
       "source": "/api/linkedin/:path*",
       "destination": "https://linkedin-content-agent-mauve.vercel.app/api/linkedin/:path*"
+    },
+    {
+      "source": "/showrun",
+      "destination": "https://showrun-pi.vercel.app/showrun"
+    },
+    {
+      "source": "/showrun/:path*",
+      "destination": "https://showrun-pi.vercel.app/showrun/:path*"
+    },
+    {
+      "source": "/api/showrun/:path*",
+      "destination": "https://showrun-pi.vercel.app/api/showrun/:path*"
     }
   ],
   "headers": [

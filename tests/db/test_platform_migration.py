@@ -40,7 +40,7 @@ def test_seed_admins_only_bootstraps_when_no_admin_exists(conn, make_user):
     assert _profile(conn, first)[3:] == ("approved", True)
     apps = {r[0] for r in conn.execute(
         "select app from platform.app_memberships where user_id = %s", (first,))}
-    assert apps == {"linkedin", "queue"}
+    assert apps == {"linkedin", "queue", "showrun"}
     second = make_user("boss2")
     assert seed_admins(conn, [f"boss2@{TEST_DOMAIN}"]) == 0
     assert _profile(conn, second)[3:] == ("pending", False)

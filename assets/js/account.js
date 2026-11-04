@@ -11,6 +11,7 @@ const MESSAGES = {
 const APPS = [
   { id: 'linkedin', name: 'LinkedIn Content Agent', href: '/linkedin' },
   { id: 'queue', name: 'Task Queue', href: '/queue' },
+  { id: 'showrun', name: 'Showrun', href: '/showrun' },
 ]
 
 async function start() {

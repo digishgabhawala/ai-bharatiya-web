@@ -7,10 +7,12 @@ This repository owns the suite homepage and, over time, the path-based product g
 - `/` — AI Bharatiyaa home and product directory
 - `/queue` — Task Queue
 - `/linkedin` — LinkedIn Content Agent
+- `/showrun` — Showrun
 
-Task Queue and LinkedIn Content Agent are deployed independently and mounted
-here through Vercel rewrites. Each product's UI and browser API are
-product-scoped (`/queue/*` + `/api/queue/*`, `/linkedin/*` + `/api/linkedin/*`),
+Task Queue, LinkedIn Content Agent and Showrun are deployed independently and
+mounted here through Vercel rewrites. Each product's UI and browser API are
+product-scoped (`/queue/*` + `/api/queue/*`, `/linkedin/*` + `/api/linkedin/*`,
+`/showrun/*` + `/api/showrun/*`),
 and machine clients use the matching product-scoped API on this same public
 origin. For Task Queue, configure
 `TASK_QUEUE_URL=https://ai-bharatiya-web.vercel.app/queue`; its clients map

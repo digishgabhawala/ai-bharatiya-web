@@ -21,7 +21,7 @@ def test_approve_records_actor_and_adds_every_membership(store, conn, admin, mak
     conn.execute("insert into platform.app_memberships (user_id, app) values (%s, 'queue')", (uid,))
     profile = store.change_status(actor_id=admin, target_id=uid, action="approve")
     assert (profile.status, profile.status_changed_by) == ("approved", admin)
-    assert sorted(store.apps_for(uid)) == ["linkedin", "queue"]
+    assert sorted(store.apps_for(uid)) == ["linkedin", "queue", "showrun"]
 
 
 def test_suspend_keeps_memberships_and_reinstate_restores(store, admin, make_user):
@@ -29,7 +29,7 @@ def test_suspend_keeps_memberships_and_reinstate_restores(store, admin, make_use
     store.change_status(actor_id=admin, target_id=uid, action="approve")
     assert store.change_status(actor_id=admin, target_id=uid, action="suspend").status == "suspended"
     assert store.change_status(actor_id=admin, target_id=uid, action="reinstate").status == "approved"
-    assert sorted(store.apps_for(uid)) == ["linkedin", "queue"]
+    assert sorted(store.apps_for(uid)) == ["linkedin", "queue", "showrun"]
 
 
 def test_unknown_user_is_not_found(store, admin):

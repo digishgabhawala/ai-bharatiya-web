@@ -88,7 +88,7 @@ def test_suspended_admin_is_403(client, store):
 def test_approve_then_me_lists_every_app(client):
     assert client.post(f"{P}/users/{USER}/approve").json()["status"] == "approved"
     client.as_user(USER, "asha@example.com")
-    assert client.get(f"{P}/me").json()["apps"] == ["linkedin", "queue"]
+    assert client.get(f"{P}/me").json()["apps"] == ["linkedin", "queue", "showrun"]
 
 
 def test_illegal_transition_and_safeguards_are_409(client):

@@ -12,7 +12,7 @@ from pathlib import Path
 import psycopg
 
 MIGRATIONS = Path(__file__).resolve().parents[1] / "db" / "migrations"
-APPS = ("linkedin", "queue")
+APPS = ("linkedin", "queue", "showrun")
 _META = ("coalesce(u.raw_user_meta_data->>'full_name', u.raw_user_meta_data->>'name'), "
          "coalesce(u.raw_user_meta_data->>'avatar_url', u.raw_user_meta_data->>'picture')")
 
