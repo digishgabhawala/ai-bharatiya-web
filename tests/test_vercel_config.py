@@ -26,6 +26,21 @@ def test_csp_allows_google_avatars_and_keeps_scripts_strict():
     assert "unsafe-inline" not in csp.split("style-src")[0]
 
 
+def _header(entry, key):
+    return next(h["value"] for h in entry["headers"] if h["key"] == key)
+
+
+def test_only_showrun_may_use_the_microphone():
+    assert "microphone=()" in _header(CFG["headers"][0], "Permissions-Policy")
+    assert "media-src" not in _csp()
+    scoped = [e for e in CFG["headers"] if "microphone=(self)" in str(e)]
+    assert [e["source"] for e in scoped] == ["/showrun(/.*)?"]
+    assert "camera=()" in _header(scoped[0], "Permissions-Policy")
+    csp = _header(scoped[0], "Content-Security-Policy")
+    assert "media-src 'self' blob:;" in csp
+    assert csp.replace(" media-src 'self' blob:;", "") == _csp()
+
+
 def test_local_only_files_are_never_deployed():
     ignored = (ROOT / ".vercelignore").read_text().split()
     for entry in (".superpowers/", ".env", ".env.*", "tests/", "db/", "scripts/", ".venv/"):
