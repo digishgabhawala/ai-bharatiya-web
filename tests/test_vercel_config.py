@@ -37,10 +37,11 @@ def test_only_showrun_gets_the_microphone_and_direct_uploads():
     assert [e["source"] for e in scoped] == ["/showrun(/.*)?"]
     assert "camera=()" in _header(scoped[0], "Permissions-Policy")
     csp = _header(scoped[0], "Content-Security-Policy")
-    assert "media-src 'self' blob:;" in csp
+    media = " media-src 'self' blob: https://*.private.blob.vercel-storage.com;"
+    assert media in csp
     blob = "https://vercel.com/api/blob/"
     assert blob in csp and blob not in _csp()
-    assert csp.replace(" media-src 'self' blob:;", "").replace(f" {blob}", "") == _csp()
+    assert csp.replace(media, "").replace(f" {blob}", "") == _csp()
 
 
 def test_local_only_files_are_never_deployed():
