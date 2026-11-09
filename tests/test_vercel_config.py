@@ -48,3 +48,14 @@ def test_local_only_files_are_never_deployed():
     ignored = (ROOT / ".vercelignore").read_text().split()
     for entry in (".superpowers/", ".env", ".env.*", "tests/", "db/", "scripts/", ".venv/"):
         assert entry in ignored
+
+
+def test_home_lists_showrun_and_plays_its_sample_from_this_site():
+    html = (ROOT / "index.html").read_text()
+    assert 'href="/showrun"' in html and "<strong>Showrun</strong>" in html
+    # The sample is proxied by the /showrun rewrite, so the home page's default-src 'self' covers it.
+    assert 'src="/showrun/sample/showrun-sample.mp4"' in html
+    assert 'poster="/showrun/sample/showrun-sample.jpg"' in html
+    assert "default-src 'self'" in _csp() and "media-src" not in _csp()
+    proxied = {r["source"]: r["destination"] for r in CFG["rewrites"]}
+    assert proxied["/showrun/:path*"] == "https://showrun-pi.vercel.app/showrun/:path*"
